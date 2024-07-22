@@ -1,0 +1,47 @@
+import {Model} from 'sequelize'
+import { DataTypes } from 'sequelize'
+import sequelize from '../conn'
+
+
+class User extends Model {
+    declare id: string
+    declare usuario: string
+    declare nome: string
+    declare descricao: string
+    declare senha: string
+    declare ativo: boolean
+}
+
+User.init({
+    id: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey:true,
+        allowNull:false,
+      },
+      usuario:{
+        type:DataTypes.STRING,
+        unique: true,
+        allowNull:false
+      },
+      nome:{
+        type:DataTypes.STRING,
+        allowNull:false
+      },
+      senha:{
+        type:DataTypes.INTEGER,
+        allowNull:false
+      },
+      ativo:{
+        type:DataTypes.BOOLEAN,
+        defaultValue:true,
+      }
+}, {
+    tableName: 'Users',
+    timestamps: true,
+    underscored: true,
+    sequelize
+})
+
+
+export default User
