@@ -1,6 +1,8 @@
 import {Model} from 'sequelize'
 import { DataTypes } from 'sequelize'
 import sequelize from '../conn'
+import Cargo from './Cargo'
+import UserCargo from './UserCargo'
 
 
 class User extends Model {
@@ -42,6 +44,5 @@ User.init({
     underscored: true,
     sequelize
 })
-
 
 export default User

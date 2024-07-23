@@ -19,6 +19,7 @@ const sign = (
 const verifyToken = (req: Request, res: Response) => {
   try {
     const token = req.header("Authorization");
+    console.log(token)
     if (!token) return res.status(401).json({ msg: "Não autoriazado" });
     const decoded = jwt.verify(token, secret);
 

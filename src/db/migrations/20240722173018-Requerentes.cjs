@@ -7,9 +7,9 @@ module.exports = {
       id:{
         type: Sequelize.UUID,
         defaultValue: Sequelize.UUIDV4,
-        allowNull:false,
         primaryKey:true,
-        unique:true
+        unique:true,
+        allowNull:false,
       },
       nome: {
         type: Sequelize.STRING,
@@ -38,16 +38,15 @@ module.exports = {
           model: 'Users',
           key: 'id'
         },
-        created_at: {
-          type: Sequelize.DATE,
-          allowNull:false
-        },
-        updated_at: {
-          type: Sequelize.DATE,
-          allowNull:false
-        }
       },
-
+      created_at: {
+        type: Sequelize.DATE,
+        allowNull:false
+      },
+      updated_at: {
+        type: Sequelize.DATE,
+        allowNull:false
+      }
     })
   },
 

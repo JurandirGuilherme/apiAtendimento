@@ -36,7 +36,7 @@ UserCargo.init({
     onDelete: 'CASCADE'
   },
 }, {
-    tableName: 'UserCargo',
+    tableName: 'User_cargos',
     timestamps: true,
     underscored: true,
     sequelize
@@ -46,13 +46,13 @@ User.belongsToMany(Cargo, {
   through: {model: UserCargo},
   foreignKey: 'userId',
   otherKey: 'cargoId',
-  as:'cargos'
+  as:'Cargos'
 })
 
 
 Cargo.belongsToMany(User, {
   through: {model: UserCargo},
-  foreignKey: 'cargoId  ',
+  foreignKey: 'cargoId',
   otherKey: 'userId',
   as:'usuarios'
 })
