@@ -23,6 +23,30 @@ abstract class AtendimentoController {
             next(error)
         }
     }
+
+    public static async listarEmAtendimentoUser(req: Request, res: Response, next:NextFunction) {
+        try {
+            const userId = verifyToken(req,res)
+            const hBody = req.body
+            const body = {...hBody, userId}
+            const {status, msg} = await AtendimentoService.listarEmAtendimentoUser(body);
+            return res.status(status).json(msg)
+        } catch (error) {
+            next(error)
+        }
+    }
+    public static async listarAtendidosUser(req: Request, res: Response, next:NextFunction) {
+        try {
+            const userId = verifyToken(req,res)
+            const hBody = req.body
+            const body = {...hBody, userId}
+            const {status, msg} = await AtendimentoService.listarAtendidosUser(body);
+            return res.status(status).json(msg)
+        } catch (error) {
+            next(error)
+        }
+    }
+    
     public static async fimAtendimento(req: Request, res: Response, next:NextFunction){
         try {
             const userId = verifyToken(req,res)

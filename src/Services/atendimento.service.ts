@@ -1,7 +1,8 @@
-import { ModelStatic, where } from "sequelize";
+import { ModelStatic, Op, where } from "sequelize";
 import Atendimento from "../db/models/Atendimento";
 import resp from "../utils/resp";
 import Requerente from "../db/models/Requerente";
+import User from "../db/models/User";
 // import schema from "./validations/schema";
 
 abstract class AtendimentoService {
@@ -19,6 +20,39 @@ abstract class AtendimentoService {
         console.log(requerente)
         return resp(200, atendimento)
     }
+    public static async listarEmAtendimentoUser(body: {userId:string}) {
+        const {userId} = body
+        const atendimento = await Atendimento.findAll({
+          include: [{
+            model: User,
+            as: "usuario",
+            attributes: ['nome'],
+          },{
+            model: Requerente,
+            as:'requerente',
+            attributes:['nome']
+          }],
+          where: { userId, fim:null },
+        });
+        return resp(200, atendimento);
+      }
+      public static async listarAtendidosUser(body: {userId:string}) {
+        const {userId} = body
+        const atendimento = await Atendimento.findAll({
+          include: [{
+            model: User,
+            as: "usuario",
+            attributes: ['nome'],
+          },{
+            model: Requerente,
+            as:'requerente',
+            attributes:['nome']
+          }],
+          where: { userId, fim:{[Op.not]: null} },
+        });
+        return resp(200, atendimento);
+      }
+
     public static async fimAtendimento(body:{atendimentoId:string}) {
         const atendimento = await this.model.update({fim: new Date()}, {where: {id: body.atendimentoId}})
         console.log(atendimento)

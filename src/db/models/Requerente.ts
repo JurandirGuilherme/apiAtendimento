@@ -2,6 +2,7 @@ import {Model} from 'sequelize'
 import { DataTypes } from 'sequelize'
 import sequelize from '../conn'
 import User from './User'
+import Atendimento from './Atendimento'
 
 
 class Requerente extends Model {
@@ -54,7 +55,15 @@ Requerente.belongsTo(User,{
   as:'usuario'
 })
 
-User.hasMany(Requerente)
+Atendimento.belongsTo(Requerente,{
+  foreignKey:'requerenteId',
+  as: 'requerente'
+})
+
+User.hasMany(Requerente, {
+  foreignKey:'userId',
+  as:'usuarios'
+})
 
 
 export default Requerente

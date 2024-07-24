@@ -46,9 +46,8 @@ User.belongsToMany(Cargo, {
   through: {model: UserCargo},
   foreignKey: 'userId',
   otherKey: 'cargoId',
-  as:'Cargos'
+  as:'cargos'
 })
-
 
 Cargo.belongsToMany(User, {
   through: {model: UserCargo},
@@ -57,4 +56,5 @@ Cargo.belongsToMany(User, {
   as:'usuarios'
 })
 
+// User.hasMany(Cargo)
 export default UserCargo

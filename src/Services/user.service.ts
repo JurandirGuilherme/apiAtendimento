@@ -13,7 +13,7 @@ abstract class UserService {
   public static model: ModelStatic<User> = User;
 
   public static async listarUsuarios() {
-    const usuarios = await this.model.findAll({include:[{model: Cargo, as:  'Cargos'}], attributes:{exclude:['senha']}})
+    const usuarios = await this.model.findAll({include:[{model: Cargo, as:  'cargos'}], attributes:{exclude:['senha']}})
     return resp(200, usuarios);
   }
   public static async getUser(body:{userId: string}) {
@@ -62,15 +62,17 @@ abstract class UserService {
 
     const hashPassword = md5(body.senha);
     const user = await this.model.findOne({
+      include:{model:Cargo, as: 'cargos', attributes:['id', 'nome']},
       where: {
         usuario: body.usuario,
         senha: hashPassword,
       },
     });
     if (!user) return resp(404, "Usuario não existe");
-    const { id, usuario, nome } = user;
+    const { id, usuario, nome, cargos } = user;
+    console.log(user)
     const token = await sign({ id, usuario, nome });
-    return resp(200, { id, usuario, token, nome });
+    return resp(200, { id, usuario, token, nome, cargos });
   }
 }
 

@@ -3,6 +3,7 @@ import { DataTypes } from 'sequelize'
 import sequelize from '../conn'
 import Cargo from './Cargo'
 import UserCargo from './UserCargo'
+import Atendimento from './Atendimento'
 
 
 class User extends Model {
@@ -43,6 +44,11 @@ User.init({
     timestamps: true,
     underscored: true,
     sequelize
+})
+
+Atendimento.belongsTo(User, {
+  foreignKey: 'userId',
+  as:'usuario'
 })
 
 export default User

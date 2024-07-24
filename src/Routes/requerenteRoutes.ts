@@ -4,6 +4,11 @@ const requerenteRoute = Express();
 
 
 requerenteRoute.get("/", RequerenteController.listar)
+requerenteRoute.get("/atendidos", RequerenteController.listarAtendidos)
+requerenteRoute.get("/preferencial", RequerenteController.listarPrioridade)
+requerenteRoute.get("/geral", RequerenteController.listarGeral)
+
+
 requerenteRoute.post("/", RequerenteController.criar)
 
 
