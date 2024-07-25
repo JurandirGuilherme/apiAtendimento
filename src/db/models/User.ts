@@ -13,6 +13,7 @@ class User extends Model {
     declare descricao: string
     declare senha: string
     declare ativo: boolean
+    declare cargos: number
 }
 
 User.init({

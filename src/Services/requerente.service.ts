@@ -21,6 +21,17 @@ abstract class RequerenteService {
     return resp(200, requerentes);
   }
 
+  public static async listarTodos() {
+    const requerentes = await this.model.findAll({
+      include: {
+        model: User,
+        as: "usuario",
+        attributes: { exclude: ["senha"] },
+      },
+    });
+    return resp(200, requerentes);
+  }
+
   public static async listarAtendidos() {
     const requerentes = await this.model.findAll({
       include: {

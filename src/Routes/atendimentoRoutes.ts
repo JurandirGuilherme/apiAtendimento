@@ -7,6 +7,9 @@ atendimentoRoute.get("/", AtendimentoController.listar)
 atendimentoRoute.get("/user", AtendimentoController.listarEmAtendimentoUser)
 atendimentoRoute.get("/atendidos", AtendimentoController.listarAtendidosUser)
 
+atendimentoRoute.get("/atendidosgeral", AtendimentoController.atendidosGeral)
+
+
 
 atendimentoRoute.post("/", AtendimentoController.criar)
 atendimentoRoute.put("/", AtendimentoController.fimAtendimento)

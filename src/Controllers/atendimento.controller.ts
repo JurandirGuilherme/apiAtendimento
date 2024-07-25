@@ -46,6 +46,17 @@ abstract class AtendimentoController {
             next(error)
         }
     }
+    public static async atendidosGeral(req: Request, res: Response, next:NextFunction) {
+        try {
+            const userId = verifyToken(req,res)
+            const hBody = req.body
+            const body = {...hBody, userId}
+            const {status, msg} = await AtendimentoService.atendidosGeral();
+            return res.status(status).json(msg)
+        } catch (error) {
+            next(error)
+        }
+    }
     
     public static async fimAtendimento(req: Request, res: Response, next:NextFunction){
         try {

@@ -12,17 +12,26 @@ abstract class RequerenteController {
             next(error)
         }
     }
-    public static async listarEmAtendimentoUser(req: Request, res: Response, next:NextFunction) {
+
+    public static async listarTodos(req: Request, res: Response, next:NextFunction) {
         try {
-            const userId = verifyToken(req,res)
-            const hBody = req.body
-            const body = {...hBody, userId}
-            const {status, msg} = await RequerenteService.listarEmAtendimentoUser(body);
+            const {status, msg} = await RequerenteService.listarTodos();
             res.status(status).json(msg)
         } catch (error) {
             next(error)
         }
     }
+    // public static async listarEmAtendimentoUser(req: Request, res: Response, next:NextFunction) {
+    //     try {
+    //         const userId = verifyToken(req,res)
+    //         const hBody = req.body
+    //         const body = {...hBody, userId}
+    //         const {status, msg} = await RequerenteService.listarEmAtendimentoUser(body);
+    //         res.status(status).json(msg)
+    //     } catch (error) {
+    //         next(error)
+    //     }
+    // }
     
     public static async listarAtendidos(req: Request, res: Response, next:NextFunction) {
         try {

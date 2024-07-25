@@ -53,7 +53,7 @@ abstract class UserService {
       cargoId: e
     }))
     const userr = await UserCargo.bulkCreate(userCargo)
-    const userrr = await User.findOne({where: {id: sId}, include:{model: Cargo, as: 'Cargos'}})
+    const userrr = await User.findOne({where: {id: sId}, include:{model: Cargo, as: 'cargos'}})
     return resp(200, userrr);
   }
 
@@ -68,7 +68,7 @@ abstract class UserService {
         senha: hashPassword,
       },
     });
-    if (!user) return resp(404, "Usuario não existe");
+    if (!user) return resp(404, "Usuario ou Senha Incorreto.");
     const { id, usuario, nome, cargos } = user;
     console.log(user)
     const token = await sign({ id, usuario, nome });
