@@ -27,6 +27,7 @@ abstract class RequerenteService {
         model: User,
         as: "usuario",
         attributes: { exclude: ["senha"] },
+        order: [['createdAt', 'ASC']]
       },
     });
     return resp(200, requerentes);
@@ -53,6 +54,8 @@ abstract class RequerenteService {
       },
       where: { atendido: false, preferencial: false },
       attributes:{exclude:['preferencial', 'userId', 'updatedAt', 'atendido']},
+      order: [['createdAt', 'ASC']]
+
     });
     return resp(200, requerentes);
   }
@@ -65,6 +68,8 @@ abstract class RequerenteService {
       },
       where: { atendido: false, preferencial: true },
       attributes:{exclude:['preferencial', 'userId', 'updatedAt', 'atendido']},
+      order: [['createdAt', 'ASC']]
+
 
     });
     return resp(200, requerentes);

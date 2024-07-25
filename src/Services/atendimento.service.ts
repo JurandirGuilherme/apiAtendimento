@@ -12,7 +12,7 @@ abstract class AtendimentoService {
     const Atendimentos = await this.model.findAll();
     return resp(200, Atendimentos);
   }
-  public static async = await Requerente.findAll({where})
+  // public static async = await Requerente.findAll({where})
 
   public static async criar(body: { requerenteId: string; userId: string }) {
     const atendimento = await this.model.create(body);
@@ -64,10 +64,11 @@ abstract class AtendimentoService {
             model: User,
             as:"usuario",
             attributes:['nome']
-          }]
+          }],
           // attributes: ["nome"],
         },
       ],
+      order: [['createdAt', 'ASC']],
       where: { userId, fim: { [Op.not]: null } },
     });
     return resp(200, atendimento);
