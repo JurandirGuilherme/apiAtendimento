@@ -13,6 +13,9 @@ userRoute.get("/", Controller.listar)
 
 userRoute.get("/id", Controller.getUser)
 
+userRoute.get("/atendimentos", Controller.getUserAtendimento)
+
+
 
 
 export default userRoute
