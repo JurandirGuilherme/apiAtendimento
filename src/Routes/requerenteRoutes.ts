@@ -14,5 +14,7 @@ requerenteRoute.get("/todos", RequerenteController.listarTodos)
 
 requerenteRoute.post("/", RequerenteController.criar)
 
+requerenteRoute.get('/dashboard', RequerenteController.qtdDashboard)
+
 
 export default requerenteRoute

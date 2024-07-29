@@ -3,6 +3,7 @@ import Atendimento from "../db/models/Atendimento";
 import resp from "../utils/resp";
 import Requerente from "../db/models/Requerente";
 import User from "../db/models/User";
+import respM from "../utils/respM";
 // import schema from "./validations/schema";
 
 abstract class AtendimentoService {
@@ -12,9 +13,12 @@ abstract class AtendimentoService {
     const Atendimentos = await this.model.findAll();
     return resp(200, Atendimentos);
   }
-  // public static async = await Requerente.findAll({where})
 
   public static async criar(body: { requerenteId: string; userId: string }) {
+    const verifyRequerente = await Requerente.findOne({
+      where: { id: body.requerenteId, atendido: true},
+    });
+    if (verifyRequerente) return respM(401, "Requerente já atendido.");
     const atendimento = await this.model.create(body);
     atendimento.save();
     const requerente = await Requerente.update(
@@ -22,6 +26,7 @@ abstract class AtendimentoService {
       { where: { id: body.requerenteId } }
     );
     console.log(requerente);
+
     return resp(200, atendimento);
   }
   public static async listarEmAtendimentoUser(body: { userId: string }) {
@@ -36,11 +41,13 @@ abstract class AtendimentoService {
         {
           model: Requerente,
           as: "requerente",
-          include:[{
-            model: User,
-            as:"usuario",
-            attributes:['nome']
-          }]
+          include: [
+            {
+              model: User,
+              as: "usuario",
+              attributes: ["nome"],
+            },
+          ],
           // attributes: ["nome"],
         },
       ],
@@ -60,15 +67,17 @@ abstract class AtendimentoService {
         {
           model: Requerente,
           as: "requerente",
-          include:[{
-            model: User,
-            as:"usuario",
-            attributes:['nome']
-          }],
+          include: [
+            {
+              model: User,
+              as: "usuario",
+              attributes: ["nome"],
+            },
+          ],
           // attributes: ["nome"],
         },
       ],
-      order: [['createdAt', 'ASC']],
+      order: [["createdAt", "ASC"]],
       where: { userId, fim: { [Op.not]: null } },
     });
     return resp(200, atendimento);
@@ -79,18 +88,20 @@ abstract class AtendimentoService {
         {
           model: Requerente,
           as: "requerente",
-          attributes: {exclude: ['userId',  'updatedAt']},
-          include:[{
-            model: User,
-            as:'usuario',
-            attributes:['nome']
-          }]
+          attributes: { exclude: ["userId", "updatedAt"] },
+          include: [
+            {
+              model: User,
+              as: "usuario",
+              attributes: ["nome"],
+            },
+          ],
         },
         {
           model: User,
-          as:'usuario',
+          as: "usuario",
           attributes: ["nome"],
-        }
+        },
       ],
       where: {
         fim: { [Op.not]: null },

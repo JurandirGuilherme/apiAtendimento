@@ -8,6 +8,10 @@ import Atendimento from './Atendimento'
 class Requerente extends Model {
     declare id: string
     declare nome: string
+    declare via: number
+    declare cin: boolean
+    declare atendido: boolean
+    declare preferencial: boolean
 }
 
 Requerente.init({
@@ -29,6 +33,11 @@ Requerente.init({
   via:{
     type:DataTypes.INTEGER,
     defaultValue:1,
+    allowNull:false
+  },
+  cin:{
+    type:DataTypes.BOOLEAN,
+    defaultValue:false,
     allowNull:false
   },
   atendido:{

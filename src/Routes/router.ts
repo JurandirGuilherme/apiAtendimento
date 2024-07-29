@@ -2,7 +2,7 @@ import  Express from "express";
 import userRoute from "./userRoutes";
 import cargoRoute from "./cargoRoutes";
 import requerenteRoute from "./requerenteRoutes";
-import atendimentoRoute from "./AtendimentoRoutes";
+import atendimentoRoute from "./atendimentoRoutes";
 
 const router = Express()
 

@@ -57,6 +57,21 @@ abstract class UserController {
             next(error)
         }
     }
+    public static async getUserSolicitantes(req: Request, res:Response, next:NextFunction) {
+        try {
+            // const userId = verifyToken(req,res)
+            // const hBody = req.body
+            // const body = {...hBody, userId}
+            const userId = 'bf1d745b-d349-4209-abc6-38b827d5ebd7'
+            const body = {userId}
+
+            const {status, msg} = await UserService.getUserSolicitantes(body)
+            return res.status(status).json(msg)
+
+        } catch (error) {
+            next(error)
+        }
+    }
     
 }
 

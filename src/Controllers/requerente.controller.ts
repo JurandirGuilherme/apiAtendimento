@@ -57,6 +57,14 @@ abstract class RequerenteController {
             next(error)
         }
     }
+    public static async qtdDashboard(req: Request, res: Response, next:NextFunction) {
+        try {
+            const {status, msg} = await RequerenteService.gtdDashboard();
+            res.status(status).json(msg)
+        } catch (error) {
+            next(error)
+        }
+    }
 
     public static async criar(req: Request, res: Response, next:NextFunction) {
         try {

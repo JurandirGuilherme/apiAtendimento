@@ -32,18 +32,53 @@ abstract class UserService {
 
   public static async getUserAtendimento(body: { userId: string }) {
     const { userId } = body;
+
     const usuarios = await User.findAll()
-
-
     const userArray = usuarios.map(async ({id, nome})=>{
       const atendimento = await Atendimento.findAll({
+        include:{model: Requerente, as: 'requerente' },
         where: { userId: id, fim: {[Op.not]: null}},
         attributes: { exclude: ["senha"] },
       });
-      return {nome, atendidos: atendimento.length}
+      let countPrefencial = 0
+      let countGeral = 0
+
+      atendimento.map((data)=>{
+        if (data.requerente.preferencial) {
+          countPrefencial++
+        }
+        else {
+          countGeral++
+        }
+      })
+
+      
+      console.log(countPrefencial)
+      return {nome, preferencial: countPrefencial, geral: countGeral, atendidos: atendimento.length }
     })
 
 
+    const atendidosUser = await Promise.all(userArray)
+
+    return resp(200, atendidosUser);
+  }
+  public static async getUserSolicitantes(body: { userId: string }){
+    const usuarios = await User.findAll()
+    const userArray = usuarios.map(async ({id, nome})=>{
+      const atendimento = await Requerente.findAll({
+        where: {userId: id},
+        attributes: { exclude: ["senha"] },
+      });
+      const preferencial = await Requerente.findAll({
+        where: {userId: id, preferencial: true},
+        attributes: { exclude: ["senha"] }})
+
+        const geral = await Requerente.findAll({
+          where: {userId: id, preferencial: false},
+          attributes: { exclude: ["senha"] }})
+
+      return {nome, preferencial: preferencial.length, geral: geral.length, total: atendimento.length}
+    })
     const atendidosUser = await Promise.all(userArray)
 
     return resp(200, atendidosUser);

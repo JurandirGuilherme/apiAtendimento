@@ -69,19 +69,55 @@ abstract class RequerenteService {
       where: { atendido: false, preferencial: true },
       attributes:{exclude:['preferencial', 'userId', 'updatedAt', 'atendido']},
       order: [['createdAt', 'ASC']]
-
-
     });
     return resp(200, requerentes);
   }
+
+  public static async gtdDashboard() {
+    const preferencial = await this.model.findAll({
+      include: {
+        model: User,
+        as: "usuario",
+        attributes: ['id','nome'],
+      },
+      where: { atendido: false, preferencial: true },
+      attributes:{exclude:['preferencial', 'userId', 'updatedAt', 'atendido']},
+      order: [['createdAt', 'ASC']]
+    });
+
+    const geral = await this.model.findAll({
+      include: {
+        model: User,
+        as: "usuario",
+        attributes: ['id','nome'],
+      },
+      where: { atendido: false, preferencial: false },
+      attributes:{exclude:['preferencial', 'userId', 'updatedAt', 'atendido']},
+      order: [['createdAt', 'ASC']]
+    });
+    const total = await this.model.findAll({
+      include: {
+        model: User,
+        as: "usuario",
+        attributes: ['id','nome'],
+      },
+      where: {atendido: false},
+      attributes:{exclude:['preferencial', 'userId', 'updatedAt', 'atendido']},
+      order: [['createdAt', 'ASC']]
+    });
+
+    return resp(200, {preferencial: preferencial.length, geral: geral.length, total: total.length});
+  }
+  
 
   public static async criar(body: {
     nome: string;
     preferencial: boolean;
     via: number;
     userId: string;
+    cin:boolean;
   }) {
-    const { userId, preferencial } = body;
+    const { userId, preferencial} = body;
     const { cargoId } = await UserCargo.findOne({ where: { userId } });
     if (preferencial == true && cargoId != 1)
       return respM(401, "Não há autorização para preferencial.");

@@ -15,6 +15,9 @@ userRoute.get("/id", Controller.getUser)
 
 userRoute.get("/atendimentos", Controller.getUserAtendimento)
 
+userRoute.get("/solicitantes", Controller.getUserSolicitantes)
+
+
 
 
 
