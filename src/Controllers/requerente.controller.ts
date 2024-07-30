@@ -57,9 +57,17 @@ abstract class RequerenteController {
             next(error)
         }
     }
+    public static async listarPrioridadeLei(req: Request, res: Response, next:NextFunction) {
+        try {
+            const {status, msg} = await RequerenteService.listarPrioridadeLei();
+            res.status(status).json(msg)
+        } catch (error) {
+            next(error)
+        }
+    }
     public static async qtdDashboard(req: Request, res: Response, next:NextFunction) {
         try {
-            const {status, msg} = await RequerenteService.gtdDashboard();
+            const {status, msg} = await RequerenteService.gtdDashboard(req.body);
             res.status(status).json(msg)
         } catch (error) {
             next(error)

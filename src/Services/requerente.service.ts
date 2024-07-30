@@ -1,4 +1,4 @@
-import { ModelStatic } from "sequelize";
+import { ModelStatic, Op } from "sequelize";
 import Requerente from "../db/models/Requerente";
 import resp from "../utils/resp";
 import User from "../db/models/User";
@@ -27,7 +27,7 @@ abstract class RequerenteService {
         model: User,
         as: "usuario",
         attributes: { exclude: ["senha"] },
-        order: [['createdAt', 'ASC']]
+        order: [["createdAt", "ASC"]],
       },
     });
     return resp(200, requerentes);
@@ -38,10 +38,12 @@ abstract class RequerenteService {
       include: {
         model: User,
         as: "usuario",
-        attributes: ['id','nome'],
+        attributes: ["id", "nome"],
       },
       where: { atendido: true },
-      attributes:{exclude:['preferencial', 'userId', 'updatedAt', 'atendido']},
+      attributes: {
+        exclude: ["preferencial", "userId", "updatedAt", "atendido"],
+      },
     });
     return resp(200, requerentes);
   }
@@ -50,12 +52,13 @@ abstract class RequerenteService {
       include: {
         model: User,
         as: "usuario",
-        attributes: ['id','nome'],
+        attributes: ["id", "nome"],
       },
       where: { atendido: false, preferencial: false },
-      attributes:{exclude:['preferencial', 'userId', 'updatedAt', 'atendido']},
-      order: [['createdAt', 'ASC']]
-
+      attributes: {
+        exclude: ["preferencial", "userId", "updatedAt", "atendido"],
+      },
+      order: [["createdAt", "ASC"]],
     });
     return resp(200, requerentes);
   }
@@ -64,60 +67,105 @@ abstract class RequerenteService {
       include: {
         model: User,
         as: "usuario",
-        attributes: ['id','nome'],
+        attributes: ["id", "nome"],
       },
       where: { atendido: false, preferencial: true },
-      attributes:{exclude:['preferencial', 'userId', 'updatedAt', 'atendido']},
-      order: [['createdAt', 'ASC']]
+      attributes: {
+        exclude: ["preferencial", "userId", "updatedAt", "atendido"],
+      },
+      order: [["createdAt", "ASC"]],
+    });
+    return resp(200, requerentes);
+  }
+  public static async listarPrioridadeLei() {
+    const requerentes = await this.model.findAll({
+      include: {
+        model: User,
+        as: "usuario",
+        attributes: ["id", "nome"],
+      },
+      where: { atendido: false, prioridadelei: true },
+      attributes: {
+        exclude: ["preferencial", "userId", "updatedAt", "atendido"],
+      },
+      order: [["createdAt", "ASC"]],
     });
     return resp(200, requerentes);
   }
 
-  public static async gtdDashboard() {
+  public static async gtdDashboard({ inicioDt, fimDt }) {
+    console.log(inicioDt)
     const preferencial = await this.model.findAll({
       include: {
         model: User,
         as: "usuario",
-        attributes: ['id','nome'],
+        attributes: ["id", "nome"],
       },
-      where: { atendido: false, preferencial: true },
-      attributes:{exclude:['preferencial', 'userId', 'updatedAt', 'atendido']},
-      order: [['createdAt', 'ASC']]
+      where: {
+        atendido: false,
+        preferencial: true,
+        createdAt: {
+          [Op.between]: [new Date(inicioDt), new Date(fimDt)],
+        },
+      },
+      attributes: {
+        exclude: ["preferencial", "userId", "updatedAt", "atendido"],
+      },
+      order: [["createdAt", "ASC"]],
     });
 
     const geral = await this.model.findAll({
       include: {
         model: User,
         as: "usuario",
-        attributes: ['id','nome'],
+        attributes: ["id", "nome"],
       },
-      where: { atendido: false, preferencial: false },
-      attributes:{exclude:['preferencial', 'userId', 'updatedAt', 'atendido']},
-      order: [['createdAt', 'ASC']]
+      where: {
+        atendido: false,
+        preferencial: false,
+        createdAt: {
+          [Op.between]: [new Date(inicioDt), new Date(fimDt)],
+        },
+      },
+      attributes: {
+        exclude: ["preferencial", "userId", "updatedAt", "atendido"],
+      },
+      order: [["createdAt", "ASC"]],
     });
     const total = await this.model.findAll({
       include: {
         model: User,
         as: "usuario",
-        attributes: ['id','nome'],
+        attributes: ["id", "nome"],
       },
-      where: {atendido: false},
-      attributes:{exclude:['preferencial', 'userId', 'updatedAt', 'atendido']},
-      order: [['createdAt', 'ASC']]
+      where: {
+        atendido: false,
+        createdAt: {
+          [Op.between]: [new Date(inicioDt), new Date(fimDt)],
+        },
+      },
+      attributes: {
+        exclude: ["preferencial", "userId", "updatedAt", "atendido"],
+      },
+      order: [["createdAt", "ASC"]],
     });
-
-    return resp(200, {preferencial: preferencial.length, geral: geral.length, total: total.length});
+    console.log(preferencial)
+    return resp(200, {
+      preferencial: preferencial.length,
+      geral: geral.length,
+      total: total.length,
+    });
   }
-  
 
   public static async criar(body: {
     nome: string;
     preferencial: boolean;
     via: number;
     userId: string;
-    cin:boolean;
+    cin: boolean;
+    prioridadelei:boolean;
   }) {
-    const { userId, preferencial} = body;
+    const { userId, preferencial } = body;
     const { cargoId } = await UserCargo.findOne({ where: { userId } });
     if (preferencial == true && cargoId != 1)
       return respM(401, "Não há autorização para preferencial.");

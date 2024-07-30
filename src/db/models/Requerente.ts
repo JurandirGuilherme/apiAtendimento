@@ -12,6 +12,7 @@ class Requerente extends Model {
     declare cin: boolean
     declare atendido: boolean
     declare preferencial: boolean
+    declare prioridadelei:boolean
 }
 
 Requerente.init({
@@ -36,6 +37,11 @@ Requerente.init({
     allowNull:false
   },
   cin:{
+    type:DataTypes.BOOLEAN,
+    defaultValue:false,
+    allowNull:false
+  },
+  prioridadelei:{
     type:DataTypes.BOOLEAN,
     defaultValue:false,
     allowNull:false

@@ -54,7 +54,7 @@ abstract class UserService {
 
       
       console.log(countPrefencial)
-      return {nome, preferencial: countPrefencial, geral: countGeral, atendidos: atendimento.length }
+      return {id, nome, preferencial: countPrefencial, geral: countGeral, atendidos: atendimento.length }
     })
 
 
@@ -77,7 +77,7 @@ abstract class UserService {
           where: {userId: id, preferencial: false},
           attributes: { exclude: ["senha"] }})
 
-      return {nome, preferencial: preferencial.length, geral: geral.length, total: atendimento.length}
+      return {id, nome, preferencial: preferencial.length, geral: geral.length, total: atendimento.length}
     })
     const atendidosUser = await Promise.all(userArray)
 
