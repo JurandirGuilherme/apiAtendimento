@@ -54,7 +54,7 @@ abstract class RequerenteService {
         as: "usuario",
         attributes: ["id", "nome"],
       },
-      where: { atendido: false, preferencial: false },
+      where: { atendido: false, preferencial: false, prioridadelei:false },
       attributes: {
         exclude: ["preferencial", "userId", "updatedAt", "atendido"],
       },
@@ -123,6 +123,7 @@ abstract class RequerenteService {
       where: {
         atendido: false,
         preferencial: false,
+        prioridadelei: false,
         createdAt: {
           [Op.between]: [new Date(inicioDt), new Date(fimDt)],
         },
@@ -149,11 +150,33 @@ abstract class RequerenteService {
       },
       order: [["createdAt", "ASC"]],
     });
+
+    const prioridade = await this.model.findAll({
+      include: {
+        model: User,
+        as: "usuario",
+        attributes: ["id", "nome"],
+      },
+      where: {
+        atendido: false,
+        prioridadelei:true,
+        createdAt: {
+          [Op.between]: [new Date(inicioDt), new Date(fimDt)],
+        },
+      },
+      attributes: {
+        exclude: ["preferencial", "userId", "updatedAt", "atendido"],
+      },
+      order: [["createdAt", "ASC"]],
+    });
     console.log(preferencial)
+
+
     return resp(200, {
       preferencial: preferencial.length,
       geral: geral.length,
       total: total.length,
+      prioridade: prioridade.length
     });
   }
 

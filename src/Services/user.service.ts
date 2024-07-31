@@ -33,55 +33,79 @@ abstract class UserService {
   public static async getUserAtendimento(body: { userId: string }) {
     const { userId } = body;
 
-    const usuarios = await User.findAll()
-    const userArray = usuarios.map(async ({id, nome})=>{
+    const usuarios = await User.findAll();
+    const userArray = usuarios.map(async ({ id, nome }) => {
       const atendimento = await Atendimento.findAll({
-        include:{model: Requerente, as: 'requerente' },
-        where: { userId: id, fim: {[Op.not]: null}},
+        include: { model: Requerente, as: "requerente" },
+        where: { userId: id, fim: { [Op.not]: null } },
         attributes: { exclude: ["senha"] },
       });
-      let countPrefencial = 0
-      let countGeral = 0
+      let countPrefencial = 0;
+      let countGeral = 0;
+      let countPrioridade = 0;
 
-      atendimento.map((data)=>{
+      atendimento.map((data) => {
         if (data.requerente.preferencial) {
-          countPrefencial++
+          countPrefencial++;
+        } else if (data.requerente.prioridadelei) {
+          countPrioridade++;
+        } else {
+          countGeral++;
         }
-        else {
-          countGeral++
-        }
-      })
+      });
 
-      
-      console.log(countPrefencial)
-      return {id, nome, preferencial: countPrefencial, geral: countGeral, atendidos: atendimento.length }
-    })
+      console.log(countPrefencial);
+      return {
+        id,
+        nome,
+        preferencial: countPrefencial,
+        geral: countGeral,
+        prioridade: countPrioridade,
+        atendidos: atendimento.length,
+      };
+    });
 
+    const atendidosUser = await Promise.all(userArray);
 
-    const atendidosUser = await Promise.all(userArray)
-
-    return resp(200, atendidosUser);
+    return resp(
+      200,
+      atendidosUser.filter((data) => data.atendidos > 0)
+    );
   }
-  public static async getUserSolicitantes(body: { userId: string }){
-    const usuarios = await User.findAll()
-    const userArray = usuarios.map(async ({id, nome})=>{
+  public static async getUserSolicitantes(body: { userId: string }) {
+    const usuarios = await User.findAll();
+    const userArray = usuarios.map(async ({ id, nome }) => {
       const atendimento = await Requerente.findAll({
-        where: {userId: id},
+        where: { userId: id },
         attributes: { exclude: ["senha"] },
       });
       const preferencial = await Requerente.findAll({
-        where: {userId: id, preferencial: true},
-        attributes: { exclude: ["senha"] }})
+        where: { userId: id, preferencial: true },
+        attributes: { exclude: ["senha"] },
+      });
+      const geral = await Requerente.findAll({
+        where: { userId: id, preferencial: false, prioridadelei: false },
+        attributes: { exclude: ["senha"] },
+      });
+      const prioridade = await Requerente.findAll({
+        where: { userId: id, prioridadelei: true },
+        attributes: { exclude: ["senha"] },
+      });
 
-        const geral = await Requerente.findAll({
-          where: {userId: id, preferencial: false},
-          attributes: { exclude: ["senha"] }})
-
-      return {id, nome, preferencial: preferencial.length, geral: geral.length, total: atendimento.length}
-    })
-    const atendidosUser = await Promise.all(userArray)
-
-    return resp(200, atendidosUser);
+      return {
+        id,
+        nome,
+        preferencial: preferencial.length,
+        geral: geral.length,
+        prioridade: prioridade.length,
+        total: atendimento.length,
+      };
+    });
+    const atendidosUser = await Promise.all(userArray);
+    return resp(
+      200,
+      atendidosUser.filter((data) => data.total > 0)
+    );
   }
 
   public static async criarUsuario(body: IUser) {
