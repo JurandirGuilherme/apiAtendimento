@@ -18,7 +18,9 @@ module.exports = {
         references:{
           model:'Users',
           key: 'id'
-        }
+        },
+        onDelete: 'RESTRICT',
+        onUpdate: 'CASCADE',
       },
       requerente_id:{
         type:DataTypes.UUID,
@@ -26,7 +28,9 @@ module.exports = {
         references:{
           model:'Requerentes',
           key:'id'
-        }
+        },
+        onDelete: 'RESTRICT',
+        onUpdate: 'CASCADE',
       },
       inicio:{
         type: DataTypes.DATE,

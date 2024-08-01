@@ -30,14 +30,16 @@ abstract class UserService {
     return resp(200, usuario);
   }
 
-  public static async getUserAtendimento(body: { userId: string }) {
-    const { userId } = body;
-
+  public static async getUserAtendimento({ inicioDt, fimDt }) {
     const usuarios = await User.findAll();
     const userArray = usuarios.map(async ({ id, nome }) => {
       const atendimento = await Atendimento.findAll({
         include: { model: Requerente, as: "requerente" },
-        where: { userId: id, fim: { [Op.not]: null } },
+        where: {
+          userId: id,
+          fim: { [Op.not]: null },
+          createdAt: { [Op.between]: [new Date(inicioDt), new Date(fimDt)] },
+        },
         attributes: { exclude: ["senha"] },
       });
       let countPrefencial = 0;
@@ -72,23 +74,43 @@ abstract class UserService {
       atendidosUser.filter((data) => data.atendidos > 0)
     );
   }
-  public static async getUserSolicitantes(body: { userId: string }) {
+
+
+  public static async getUserSolicitantes({ inicioDt, fimDt }) {
+    console.log(inicioDt, fimDt);
     const usuarios = await User.findAll();
     const userArray = usuarios.map(async ({ id, nome }) => {
       const atendimento = await Requerente.findAll({
-        where: { userId: id },
+        where: {
+          userId: id,
+          createdAt: { [Op.between]: [new Date(inicioDt), new Date(fimDt)] },
+        },
         attributes: { exclude: ["senha"] },
       });
       const preferencial = await Requerente.findAll({
-        where: { userId: id, preferencial: true },
+        where: {
+          userId: id,
+          preferencial: true,
+          createdAt: { [Op.between]: [inicioDt, fimDt] },
+        },
         attributes: { exclude: ["senha"] },
       });
+      console.log(new Date(inicioDt));
       const geral = await Requerente.findAll({
-        where: { userId: id, preferencial: false, prioridadelei: false },
+        where: {
+          userId: id,
+          preferencial: false,
+          prioridadelei: false,
+          createdAt: { [Op.between]: [new Date(inicioDt), new Date(fimDt)] },
+        },
         attributes: { exclude: ["senha"] },
       });
       const prioridade = await Requerente.findAll({
-        where: { userId: id, prioridadelei: true },
+        where: {
+          userId: id,
+          prioridadelei: true,
+          createdAt: { [Op.between]: [inicioDt, fimDt] },
+        },
         attributes: { exclude: ["senha"] },
       });
 

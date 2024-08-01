@@ -54,7 +54,7 @@ abstract class RequerenteService {
         as: "usuario",
         attributes: ["id", "nome"],
       },
-      where: { atendido: false, preferencial: false, prioridadelei:false },
+      where: { atendido: false, preferencial: false, prioridadelei: false },
       attributes: {
         exclude: ["preferencial", "userId", "updatedAt", "atendido"],
       },
@@ -94,7 +94,7 @@ abstract class RequerenteService {
   }
 
   public static async gtdDashboard({ inicioDt, fimDt }) {
-    console.log(inicioDt)
+    console.log(inicioDt);
     const preferencial = await this.model.findAll({
       include: {
         model: User,
@@ -159,7 +159,7 @@ abstract class RequerenteService {
       },
       where: {
         atendido: false,
-        prioridadelei:true,
+        prioridadelei: true,
         createdAt: {
           [Op.between]: [new Date(inicioDt), new Date(fimDt)],
         },
@@ -169,14 +169,13 @@ abstract class RequerenteService {
       },
       order: [["createdAt", "ASC"]],
     });
-    console.log(preferencial)
-
+    console.log(preferencial);
 
     return resp(200, {
       preferencial: preferencial.length,
       geral: geral.length,
       total: total.length,
-      prioridade: prioridade.length
+      prioridade: prioridade.length,
     });
   }
 
@@ -186,7 +185,7 @@ abstract class RequerenteService {
     via: number;
     userId: string;
     cin: boolean;
-    prioridadelei:boolean;
+    prioridadelei: boolean;
   }) {
     const { userId, preferencial } = body;
     const { cargoId } = await UserCargo.findOne({ where: { userId } });

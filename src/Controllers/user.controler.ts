@@ -48,7 +48,7 @@ abstract class UserController {
             // const hBody = req.body
             // const body = {...hBody, userId}
             const userId = 'bf1d745b-d349-4209-abc6-38b827d5ebd7'
-            const body = {userId}
+            const body = req.body
 
             const {status, msg} = await UserService.getUserAtendimento(body)
             return res.status(status).json(msg)
@@ -63,7 +63,7 @@ abstract class UserController {
             // const hBody = req.body
             // const body = {...hBody, userId}
             const userId = 'bf1d745b-d349-4209-abc6-38b827d5ebd7'
-            const body = {userId}
+            const body = req.body
 
             const {status, msg} = await UserService.getUserSolicitantes(body)
             return res.status(status).json(msg)
