@@ -34,9 +34,24 @@ abstract class PedidoService {
       ],
       where: { impresso: false },
     });
-    return resp(200, pedidos);
-  }
 
+    const pedidosEmfila = await Promise.all(pedidos.map(e => axios.get(`https://idnet.pe.gov.br/Montreal.IdNet.Comunicacao.WebApi/atendimento/consultar/${e.numero}`)
+    .then(({data})=>{return {
+      pedidoIdnet: data.numeroPedido,
+      numero: e.numero,
+      solicitante: e.solicitante,
+      createdAt: e.createdAt,
+      atividadeAtual: data.atividadeAtual,
+      postoDestino: data.siglaPostoDestino,
+      postoOrigem: data.siglaPostoOrigem,
+      entrega: e.entrega
+    }})))
+    
+    // console.log(pedidosEmfila)
+
+
+    return resp(200, pedidosEmfila.reverse());
+  }
   public static async impresso(body: { pedido: Number; userId: string }) {
     const { userId, pedido } = body;
     const pedidos = this.model.update(
@@ -63,21 +78,29 @@ abstract class PedidoService {
         return null;
       });
 
-    const verifyPedido = await this.model.findAll({where:{pedido}})
+    const verifyPedido = await this.model.findOne({
+      where: { numero: pedido },
+    });
     if (!pedidoIdNet)
       return respM(404, "Nº de pedido não existe ou incorreto.");
-    const { numeroPedido, podeImprimir, siglaPostoOrigem } = pedidoIdNet;
+    const {
+      numeroPedido,
+      podeImprimir,
+      siglaPostoOrigem,
+      siglaPostoDestino,
+      atividadeAtual,
+    } = pedidoIdNet;
     if (!podeImprimir)
       return respM(401, "Pedido não encontrasse em fila para emição.");
-
-    if(verifyPedido) return respM(401, "Pedido já existente em fila de prioridade.")
-    console.log(entregaCode, podeImprimir);
-
+    if (verifyPedido)
+      return respM(401, "Pedido já existente em fila de prioridade.");
     const Pedido = await this.model.create({
       numero: numeroPedido,
       solicitanteId: userId,
       postoOrigem: siglaPostoOrigem,
       entregaCode,
+      siglaPostoDestino,
+      atividadeAtual,
     });
     Pedido.save();
     return resp(200, Pedido);
