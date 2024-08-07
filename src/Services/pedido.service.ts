@@ -10,7 +10,10 @@ abstract class PedidoService {
   static model: ModelStatic<Pedido> = Pedido;
 
   public static async listar() {
-    const pedidos = await this.model.findAll();
+    const pedidos = await this.model.findAll({ include: [
+      { model: Entrega, as: "entrega", attributes: ["nome"] },
+      { model: User, as: "solicitante", attributes: ["id", "nome"] },
+    ]});
     return resp(200, pedidos);
   }
 
