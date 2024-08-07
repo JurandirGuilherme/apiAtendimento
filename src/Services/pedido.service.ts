@@ -39,29 +39,29 @@ abstract class PedidoService {
       where: { impresso: true },
     });
 
-    const pedidosEmfila = await Promise.all(
-      pedidos.map((e) =>
-        axios
-          .get(
-            `https://idnet.pe.gov.br/Montreal.IdNet.Comunicacao.WebApi/atendimento/consultar/${e.numero}`
-          )
-          .then(({ data }) => {
-            return {
-              pedidoIdnet: data.numeroPedido,
-              numero: e.numero,
-              solicitante: e.solicitante,
-              createdAt: e.createdAt,
-              atividadeAtual: data.atividadeAtual,
-              postoDestino: data.siglaPostoDestino,
-              postoOrigem: data.siglaPostoOrigem,
-              operador: e.operador,
-              entrega: e.entrega,
-              dtImpressao: e.dtImpressao,
-            };
-          })
-      )
-    );
-    return resp(200, pedidosEmfila.reverse());
+    // const pedidosEmfila = await Promise.all(
+    //   pedidos.map((e) =>
+    //     axios
+    //       .get(
+    //         `https://idnet.pe.gov.br/Montreal.IdNet.Comunicacao.WebApi/atendimento/consultar/${e.numero}`
+    //       )
+    //       .then(({ data }) => {
+    //         return {
+    //           pedidoIdnet: data.numeroPedido,
+    //           numero: e.numero,
+    //           solicitante: e.solicitante,
+    //           createdAt: e.createdAt,
+    //           atividadeAtual: data.atividadeAtual,
+    //           postoDestino: data.siglaPostoDestino,
+    //           postoOrigem: data.siglaPostoOrigem,
+    //           operador: e.operador,
+    //           entrega: e.entrega,
+    //           dtImpressao: e.dtImpressao,
+    //         };
+    //       })
+    //   )
+    // );
+    return resp(200, pedidos);
   }
   public static async listarEmFila() {
     const pedidos = await this.model.findAll({
@@ -117,7 +117,6 @@ abstract class PedidoService {
     inicioDt: string;
     fimDt: string;
   }) {
-    console.log;
     const pedidos = await this.model.findAll({
       include: [
         { model: Entrega, as: "entrega", attributes: ["nome"] },
@@ -130,27 +129,7 @@ abstract class PedidoService {
       },
     });
 
-    const pedidosEmAndamento = await Promise.all(
-      pedidos.map((e) =>
-        axios
-          .get(
-            `https://idnet.pe.gov.br/Montreal.IdNet.Comunicacao.WebApi/atendimento/consultar/${e.numero}`
-          )
-          .then(({ data }) => {
-            return {
-              pedidoIdnet: data.numeroPedido,
-              numero: e.numero,
-              solicitante: e.solicitante,
-              createdAt: e.createdAt,
-              atividadeAtual: data.atividadeAtual,
-              postoDestino: data.siglaPostoDestino,
-              postoOrigem: data.siglaPostoOrigem,
-              entrega: e.entrega,
-            };
-          })
-      )
-    );
-    return resp(200, pedidosEmAndamento.reverse());
+    return resp(200, pedidos);
   }
 
   public static async imprimir(body: { pedido: Number; userId: string }) {
