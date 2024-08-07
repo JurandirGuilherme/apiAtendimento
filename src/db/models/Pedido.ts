@@ -10,6 +10,7 @@ class Pedido extends Model {
   declare operadorId: string | null;
   declare entregaCode: number;
   declare impresso: boolean;
+  declare cin: boolean;
 }
 
 Pedido.init(
@@ -40,11 +41,20 @@ Pedido.init(
       defaultValue: false,
       allowNull: false,
     },
+    cin: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+      allowNull: false,
+    },
     dtImpressao: {
       type: DataTypes.DATE,
       allowNull: true,
     },
     postoOrigem: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    postoDestino: {
       type: DataTypes.STRING,
       allowNull: false,
     },

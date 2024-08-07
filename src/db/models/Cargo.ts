@@ -21,7 +21,7 @@ Cargo.init({
   }
 }, {
     tableName: 'Cargos',
-    timestamps: true,
+    timestamps: false,
     underscored: true,
     sequelize
 })

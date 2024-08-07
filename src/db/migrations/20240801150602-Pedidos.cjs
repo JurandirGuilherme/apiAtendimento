@@ -31,7 +31,10 @@ module.exports = {
       },
       posto_origem: {
         type: Sequelize.STRING,
-
+        allowNull: false,
+      },
+      posto_destino: {
+        type: Sequelize.STRING,
         allowNull: false,
       },
       impresso: {
@@ -52,6 +55,11 @@ module.exports = {
         onDelete: "RESTRICT",
         onUpdate: "CASCADE",
         allowNull: false,
+      },
+      cin:{
+        type:Sequelize.BOOLEAN,
+        defaultValue:false,
+        allowNull:false
       },
       created_at: {
         type: Sequelize.DATE,

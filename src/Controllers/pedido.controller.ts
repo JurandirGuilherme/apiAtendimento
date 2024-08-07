@@ -20,6 +20,14 @@ abstract class PedidoController {
             next(error)
         }
     }
+    public static async andamento(req: Request, res: Response, next:NextFunction) {
+        try {
+            const {status, msg} = await PedidoService.andamento(req.body);
+            res.status(status).json(msg)
+        } catch (error) {
+            next(error)
+        }
+    }
     public static async listarImpressos(req: Request, res: Response, next:NextFunction) {
         try {
             const {status, msg} = await PedidoService.listarImpressos();
@@ -29,12 +37,34 @@ abstract class PedidoController {
         }
     }
 
-    public static async impresso(req: Request, res: Response, next:NextFunction) {
+    public static async imprimir(req: Request, res: Response, next:NextFunction) {
         try {
             const userId = verifyToken(req,res)
             const hBody = req.body
             const body = {...hBody, userId}
-            const {status, msg} = await PedidoService.impresso(body);
+            const {status, msg} = await PedidoService.imprimir(body);
+            res.status(status).json(msg)
+        } catch (error) {
+            next(error)
+        }
+    }
+    public static async script(req: Request, res: Response, next:NextFunction){
+        try {
+            const {status, msg} = await PedidoService.script();
+            res.status(status).json(msg)
+            
+        } catch (error) {
+            next(error)
+            
+        }
+    }
+
+    public static async consultar(req: Request, res: Response, next:NextFunction) {
+        try {
+            // const userId = verifyToken(req,res)
+            const body = req.body
+            // const body = {...hBody, userId}
+            const {status, msg} = await PedidoService.consultar(body);
             res.status(status).json(msg)
         } catch (error) {
             next(error)

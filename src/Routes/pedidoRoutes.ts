@@ -5,7 +5,12 @@ const pedidoRoute = Express();
 pedidoRoute.post("/", pedidoController.criar);
 pedidoRoute.get("/", pedidoController.listar);
 pedidoRoute.get("/emfila", pedidoController.listarEmFila);
-pedidoRoute.put("/impresso", pedidoController.impresso);
-pedidoRoute.get("/impressos", pedidoController.listarImpressos);
+pedidoRoute.post("/andamento", pedidoController.andamento);
+pedidoRoute.put("/impresso", pedidoController.imprimir);
+pedidoRoute.post("/impressos", pedidoController.listarImpressos);
+pedidoRoute.post("/consultar", pedidoController.consultar);
+pedidoRoute.get("/script", pedidoController.script);
+
+
 
 export default pedidoRoute;
