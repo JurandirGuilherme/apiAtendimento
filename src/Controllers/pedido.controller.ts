@@ -30,7 +30,7 @@ abstract class PedidoController {
     }
     public static async listarImpressos(req: Request, res: Response, next:NextFunction) {
         try {
-            const {status, msg} = await PedidoService.listarImpressos();
+            const {status, msg} = await PedidoService.listarImpressos(req.body);
             res.status(status).json(msg)
         } catch (error) {
             next(error)
