@@ -141,9 +141,9 @@ abstract class PedidoService {
       atividadeAtual,
     } = pedidoIdNet;
     if (!podeImprimir)
-      return respM(401, "Pedido não encontra-se em fila para emissão.");
+      return resp(401, {msg: "Pedido não encontra-se em fila para emissão", ...pedidoIdNet  });
     if (verifyPedido)
-      return respM(401, "Pedido já existente em fila de prioridade.");
+      return resp(401, {msg: "Pedido já existente em fila de prioridade", ...pedidoIdNet });
     const Pedido = await this.model.create({
       numero: numeroPedido,
       solicitanteId: userId,
