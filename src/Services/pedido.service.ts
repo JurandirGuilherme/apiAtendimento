@@ -19,7 +19,6 @@ abstract class PedidoService {
     return resp(200, pedidos);
   }
 
-
   public static async listarImpressos({
     inicioDt,
     fimDt,
@@ -42,7 +41,7 @@ abstract class PedidoService {
     });
     return resp(200, pedidos);
   }
-  
+
   public static async listarEmFila() {
     const pedidos = await this.model.findAll({
       include: [
@@ -56,7 +55,6 @@ abstract class PedidoService {
 
     return resp(200, pedidos);
   }
-
 
   public static async andamento({
     inicioDt,
@@ -82,6 +80,27 @@ abstract class PedidoService {
 
   public static async imprimir(body: { pedido: Number; userId: string }) {
     const { userId, pedido } = body;
+    console.log(pedido);
+    const { codigoAtividadeAtual } = await fetch(
+      `https://idnet.pe.gov.br/Montreal.IdNet.Comunicacao.WebApi/atendimento/consultar/${pedido}`
+    )
+      .then(async (data) => await data.json())
+      .catch(() => {
+        console.log("Erro em imprimir service");
+      });
+
+    // console.log(codigoAtividadeAtual);
+    // const { codigoAtividadeAtual } = await axios
+    //   .get(
+    //     `https://idnet.pe.gov.br/Montreal.IdNet.Comunicacao.WebApi/atendimento/consultar/${pedido}`
+    //   )
+    //   .then(({ data }) => data)
+    //   .catch(() => {
+    //     console.log("Erro em imprimir service");
+    //   });
+
+    if (codigoAtividadeAtual == 15)
+      return respM(401, "Pedido em geração de carteira de identidade.");
     await this.model.update(
       { impresso: true, operadorId: userId, dtImpressao: new Date() },
       { where: { numero: pedido, impresso: false } }
@@ -139,11 +158,37 @@ abstract class PedidoService {
       siglaPostoDestino,
       carteiraNacional,
       atividadeAtual,
+      codigoAtividadeAtual,
     } = pedidoIdNet;
-    if (!podeImprimir)
-      return resp(401, {msg: "Pedido não encontra-se em fila para emissão", ...pedidoIdNet  });
+
+    //Entrega
+    if (codigoAtividadeAtual == 18)
+      return resp(401, { msg: "Carteira Impressa", ...pedidoIdNet });
+    // Já Existe na base
     if (verifyPedido)
-      return resp(401, {msg: "Pedido já existente em fila de prioridade", ...pedidoIdNet });
+      return resp(401, {
+        msg: "Pedido já existente em fila de prioridade",
+        ...pedidoIdNet,
+      });
+    //Conferencia
+    if (codigoAtividadeAtual == 19)
+      return resp(401, {
+        msg: "Pedido já foi impresso, aguardar finalização",
+        ...pedidoIdNet,
+      });
+    //Comunicação Externa
+    if (codigoAtividadeAtual == 103)
+      return resp(401, {
+        msg: "Pedido finalizado, enviando dados pro Gov.br",
+        ...pedidoIdNet,
+      });
+    //Não pode Imprimir
+    if (!podeImprimir)
+      return resp(401, {
+        msg: "Pedido não encontra-se em fila para emissão",
+        ...pedidoIdNet,
+      });
+
     const Pedido = await this.model.create({
       numero: numeroPedido,
       solicitanteId: userId,
