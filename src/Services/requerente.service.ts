@@ -93,7 +93,7 @@ abstract class RequerenteService {
     return resp(200, requerentes);
   }
 
-  public static async gtdDashboard({ inicioDt, fimDt }) {
+  public static async gtdDashboard({ inicioDt, fimDt }: {inicioDt: any, fimDt: any}) {
     console.log(inicioDt);
     const preferencial = await this.model.findAll({
       include: {
@@ -188,8 +188,8 @@ abstract class RequerenteService {
     prioridadelei: boolean;
   }) {
     const { userId, preferencial } = body;
-    const { cargoId } = await UserCargo.findOne({ where: { userId } });
-    if (preferencial == true && cargoId != "1")
+    const data = await UserCargo.findOne({ where: { userId } });
+    if (preferencial == true && data!.cargoId != "1")
       return respM(401, "Não há autorização para preferencial.");
     const Requerente = await this.model.create(body);
     Requerente.save();

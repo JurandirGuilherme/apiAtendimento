@@ -76,7 +76,7 @@ abstract class UserService {
   }
 
 
-  public static async getUserSolicitantes({ inicioDt, fimDt }) {
+  public static async getUserSolicitantes({ inicioDt, fimDt }: {inicioDt: any, fimDt: any}) {
     console.log(inicioDt, fimDt);
     const usuarios = await User.findAll();
     const userArray = usuarios.map(async ({ id, nome }) => {
