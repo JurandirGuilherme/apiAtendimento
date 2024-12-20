@@ -1,4 +1,4 @@
-import jwt, { SignOptions } from "jsonwebtoken";
+import jwt, { JwtPayload, SignOptions } from "jsonwebtoken";
 import "dotenv/config";
 import { Request, Response } from "express";
 
@@ -16,12 +16,15 @@ const sign = (
   return jwt.sign(payload, secret, jwtConfig);
 };
 
+interface IJwtPayload extends JwtPayload{
+  id:string;
+}
 const verifyToken = (req: Request, res: Response) => {
   try {
     const token = req.header("Authorization");
     console.log(token)
     if (!token) return res.status(401).json({ msg: "Não autoriazado" });
-    const decoded = jwt.verify(token, secret);
+    const decoded = jwt.verify(token, secret) as IJwtPayload;
 
     const userId = decoded.id!
 

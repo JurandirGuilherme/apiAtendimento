@@ -189,7 +189,7 @@ abstract class RequerenteService {
   }) {
     const { userId, preferencial } = body;
     const { cargoId } = await UserCargo.findOne({ where: { userId } });
-    if (preferencial == true && cargoId != 1)
+    if (preferencial == true && cargoId != "1")
       return respM(401, "Não há autorização para preferencial.");
     const Requerente = await this.model.create(body);
     Requerente.save();

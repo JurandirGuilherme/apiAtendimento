@@ -27,5 +27,8 @@
     "sequelize-cli": "^6.6.2",
     "tsx": "^4.16.2",
     "typescript": "^5.5.3"
+  },
+  "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.7"
   }
 }

@@ -7,7 +7,7 @@ import Cargo from './Cargo'
 
 class UserCargo extends Model {
     declare userId: string
-    declare cargoId: string
+    declare cargoId: any
 }
 
 UserCargo.init({

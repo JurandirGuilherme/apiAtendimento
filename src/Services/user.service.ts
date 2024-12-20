@@ -30,10 +30,10 @@ abstract class UserService {
     return resp(200, usuario);
   }
 
-  public static async getUserAtendimento({ inicioDt, fimDt }) {
+  public static async getUserAtendimento({ inicioDt, fimDt }: {inicioDt:any, fimDt:any}) {
     const usuarios = await User.findAll();
     const userArray = usuarios.map(async ({ id, nome }) => {
-      const atendimento = await Atendimento.findAll({
+      const atendimento:Array<any> = await Atendimento.findAll({
         include: { model: Requerente, as: "requerente" },
         where: {
           userId: id,
@@ -175,7 +175,8 @@ abstract class UserService {
       },
     });
     if (!user) return resp(404, "Usuario ou Senha Incorreto.");
-    const { id, usuario, nome, cargos } = user;
+    const { id, usuario, nome, cargos, ativo } = user;
+    if (!ativo) return resp(400, "Usuário bloqueado.");
     console.log(user);
     const token = await sign({ id, usuario, nome });
     return resp(200, { id, usuario, token, nome, cargos });
