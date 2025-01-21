@@ -46,6 +46,11 @@ Pedido.init(
       defaultValue: false,
       allowNull: false,
     },
+    observacao:{
+      type: DataTypes.TEXT,
+      defaultValue:null,
+      allowNull: true,
+    },
     dtImpressao: {
       type: DataTypes.DATE,
       allowNull: true,

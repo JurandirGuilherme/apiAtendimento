@@ -133,8 +133,9 @@ abstract class PedidoService {
     pedido: Number;
     userId: string;
     entrega: number;
+    observacao: string;
   }) {
-    const { pedido, userId, entrega: entregaCode } = body;
+    const { pedido, userId, entrega: entregaCode, observacao } = body;
     const pedidoIdNet = await axios
       .get(
         `https://idnet.pe.gov.br/Montreal.IdNet.Comunicacao.WebApi/atendimento/consultar/${pedido}`
@@ -195,6 +196,7 @@ abstract class PedidoService {
       postoOrigem: siglaPostoOrigem,
       postoDestino: siglaPostoDestino,
       cin: carteiraNacional,
+      observacao: String(observacao).trim() || null,
       entregaCode,
       atividadeAtual,
     });
