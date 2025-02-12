@@ -40,6 +40,7 @@ abstract class PedidoController {
     public static async imprimir(req: Request, res: Response, next:NextFunction) {
         try {
             const userId = verifyToken(req,res)
+            if (!userId) throw new Error;
             const hBody = req.body
             const body = {...hBody, userId}
             const {status, msg} = await PedidoService.imprimir(body);
