@@ -5,6 +5,9 @@ import axios from "axios";
 import respM from "../utils/respM";
 import Entrega from "../db/models/Entrega";
 import User from "../db/models/User";
+import { Moment } from "moment";
+import moment from "moment";
+
 
 abstract class PedidoService {
   static model: ModelStatic<Pedido> = Pedido;
@@ -205,29 +208,52 @@ abstract class PedidoService {
   }
 
   public static async script() {
-    const pedidos = await this.model.findAll({ where: { impresso: false } });
 
-    await Promise.all(
-      pedidos.map((e) =>
-        axios
-          .get(
-            `https://idnet.pe.gov.br/Montreal.IdNet.Comunicacao.WebApi/atendimento/consultar/${e.numero}`
-          )
-          .then(async ({ data }) => {
-            if (data.carteiraNacional) {
-              await this.model
-                .update({ cin: true }, { where: { numero: e.numero } })
-                .then((data) => {
-                  console.log(data, " Foi");
-                })
-                .catch((error) => {
-                  console.log("deu errado");
-                });
-            }
-          })
-      )
-    );
-    return respM(200, "ok");
+    const pedidos = await this.model.findAll({where: 
+    {
+    createdAt:{
+      [Op.between]: [new Date("02/01/2025"), new Date("02/28/2025")]
+    }
+  },
+  attributes:['numero', 'createdAt'],
+  include:[{ model: User, as: "solicitante", attributes: ["nome"] }]
+  }
+  )
+  console.log(pedidos)
+
+  const tratamento = pedidos.map((data)=>{
+    return {
+      pedido: data.numero,
+      dataSolicitacao:  moment(data.createdAt).format("DD/MM/YYYY"),
+      NomeSolicitante: data.solicitante.nome
+    }
+  })
+
+  return respM(200, tratamento);
+
+  //   const pedidos = await this.model.findAll({ where: { impresso: false } });
+
+  //   await Promise.all(
+  //     pedidos.map((e) =>
+  //       axios
+  //         .get(
+  //           `https://idnet.pe.gov.br/Montreal.IdNet.Comunicacao.WebApi/atendimento/consultar/${e.numero}`
+  //         )
+  //         .then(async ({ data }) => {
+  //           if (data.carteiraNacional) {
+  //             await this.model
+  //               .update({ cin: true }, { where: { numero: e.numero } })
+  //               .then((data) => {
+  //                 console.log(data, " Foi");
+  //               })
+  //               .catch((error) => {
+  //                 console.log("deu errado");
+  //               });
+  //           }
+  //         })
+  //     )
+  //   );
+  //   return respM(200, "ok");
   }
 }
 
